@@ -1,9 +1,5 @@
 # see: https://huggingface.co
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from transformers import AutoTokenizer, MarianMTModel
-from transformers import pipeline
-from transformers import PegasusForConditionalGeneration
-from transformers import PegasusTokenizer
 import requests
 import spacy
 import pytextrank
@@ -14,28 +10,11 @@ import traceback
 
 
 nlp = spacy.load("de_core_news_sm")
-pegasus_model_name = "transformersbook/pegasus-samsum"
 
 
 def getText():
-    f = open("pegasus_input.txt", "r", encoding='utf-8')
+    f = open("translate_input.txt", "r", encoding='utf-8')
     return f.read()
-
-
-def generate_abstract_summary(text):
-
-    pegasus_tokenizer = PegasusTokenizer.from_pretrained(pegasus_model_name)
-    pipe = pipeline(
-        "summarization",
-        model=pegasus_model_name,
-        tokenizer=pegasus_tokenizer,
-        truncation=True,
-        framework="pt"
-    )
-    summarizer = pipe
-    summary = summarizer(text, min_length=0,
-                         max_length=512)
-    return summary[0]['summary_text']
 
 
 def clean_text(text):
@@ -92,23 +71,19 @@ if __name__ == '__main__':
         # print("The original text: ==========================================================")
         # print(text)
 
-        abstract_summary = generate_abstract_summary(text)
-        # print("Abstract Summary in English: ==========================================================")
-        # print(abstract_summary)
-
-        in_german = translate_english_to_german(abstract_summary)
-        # print("Abstract Summary in German: ==========================================================")
-        # print(in_german)
+        # print("As english text: ============================================================")
+        english_text = translate_german_to_english(text)
+        # print(english_text)
 
         # We json this result doct and write it as a result
         result = {
-            "abstract_summary": in_german,
+            "english_translation": english_text
         }
         # print("The results: ==========================================================")
         # print(result)
 
         # Write the result as json
-        with open("pegasus_output.json", "w", encoding="utf-8") as outfile:
+        with open("translate_output.json", "w", encoding="utf-8") as outfile:
             json.dump(result, outfile)
         print('GOOD')
     except Exception as ex:
@@ -118,7 +93,7 @@ if __name__ == '__main__':
             'ex': str(ex),
             'traceback': traceback.format_exc()
         }
-        with open("pegasus_output.json", "w", encoding="utf-8") as outfile:
+        with open("translate_output.json", "w", encoding="utf-8") as outfile:
             json.dump(bad, outfile)
         print('BAD')
     sys.stdout.flush()

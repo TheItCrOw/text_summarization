@@ -15,7 +15,7 @@ nlp = spacy.load("de_core_news_sm")
 
 
 def getText():
-    f = open("input.txt", "r", encoding='utf-8')
+    f = open("bart_input.txt", "r", encoding='utf-8')
     return f.read()
 
 
@@ -79,14 +79,8 @@ if __name__ == '__main__':
     try:
         text = getText()
         text = clean_text(text)
-        # print("The original text: ==========================================================")
-        # print(text)
 
-        # print("As english text: ============================================================")
-        english_text = translate_german_to_english(text)
-        # print(english_text)
-
-        abstract_summary = generate_abstract_summary(english_text)
+        abstract_summary = generate_abstract_summary(text)
         # print("Abstract Summary in English: ==========================================================")
         # print(abstract_summary)
 
@@ -96,14 +90,13 @@ if __name__ == '__main__':
 
         # We json this result doct and write it as a result
         result = {
-            "english_translation": english_text,
             "abstract_summary": in_german,
         }
         # print("The results: ==========================================================")
         # print(result)
 
         # Write the result as json
-        with open("output.json", "w", encoding="utf-8") as outfile:
+        with open("bart_output.json", "w", encoding="utf-8") as outfile:
             json.dump(result, outfile)
         print('GOOD')
     except Exception as ex:
@@ -113,7 +106,7 @@ if __name__ == '__main__':
             'ex': str(ex),
             'traceback': traceback.format_exc()
         }
-        with open("output.json", "w", encoding="utf-8") as outfile:
+        with open("bart_output.json", "w", encoding="utf-8") as outfile:
             json.dump(bad, outfile)
         print('BAD')
     sys.stdout.flush()

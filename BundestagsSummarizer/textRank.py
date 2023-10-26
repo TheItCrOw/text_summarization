@@ -16,7 +16,7 @@ nlp = spacy.load("de_core_news_sm")
 
 
 def getText():
-    f = open("input.txt", "r", encoding='utf-8')
+    f = open("textRank_input.txt", "r", encoding='utf-8')
     return f.read()
 
 
@@ -62,7 +62,7 @@ if __name__ == '__main__':
         }
 
         # Write the result as json
-        with open("output.json", "w", encoding="utf-8") as outfile:
+        with open("textRank_output.json", "w", encoding="utf-8") as outfile:
             json.dump(result, outfile)
         print('GOOD')
     except Exception as ex:
@@ -72,7 +72,7 @@ if __name__ == '__main__':
             'ex': str(ex),
             'traceback': traceback.format_exc()
         }
-        with open("output.json", "w", encoding="utf-8") as outfile:
+        with open("textRank_output.json", "w", encoding="utf-8") as outfile:
             json.dump(bad, outfile)
         print('BAD')
     sys.stdout.flush()
